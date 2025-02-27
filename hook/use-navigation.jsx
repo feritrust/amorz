@@ -7,15 +7,17 @@ const useNavigation = () => {
   const pathname = usePathname();
   const [isHomeActive, setIsHomeActive] = useState(false);
   const [isProfileActive, setIsProfileActive] = useState(false);
-  const [isChatActive, setIsChatActive] = useState(false);
-  const [isShopActive, setIsShopActive] = useState(false);
+  const [isReservationActive, setIsReservationActive] = useState(false);
+  const [isAboutActive, setIsAboutActive] = useState(false);
+  const [isContactActive, setIsContactActive] = useState(false);
 
   useEffect(() => {
     // ابتدا همه صفحات غیر فعال می‌شوند
     setIsHomeActive(false);
     setIsProfileActive(false);
-    setIsChatActive(false);
-    setIsShopActive(false);
+    setIsReservationActive(false);
+    setIsAboutActive(false);
+    setIsContactActive(false);
 
     // بر اساس مسیر فعلی، صفحه فعال تنظیم می‌شود
     switch (pathname) {
@@ -25,12 +27,15 @@ const useNavigation = () => {
       case "/profile":
         setIsProfileActive(true);
         break;
-      case "/chats":
-        setIsChatActive(true);
+      case "/reservation":
+        setIsReservationActive(true);
         break;
-      case "/shop":
-        setIsShopActive(true);
+      case "/about":
+        setIsAboutActive(true);
         break;
+        case "/contact-us":
+          setIsContactActive(true);
+          break;
       default:
         // برای هر مسیر دیگری که وجود ندارد
         break;
@@ -40,8 +45,9 @@ const useNavigation = () => {
   return {
     isHomeActive,
     isProfileActive,
-    isChatActive,
-    isShopActive,
+    isReservationActive,
+    isAboutActive,
+    isContactActive,
   };
 };
 
