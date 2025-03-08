@@ -3,6 +3,9 @@ import "./globals.css";
 import BottomNavigation from '../components/BottomNavigation/BottomNavigation';
 import ThemeProvider from "@/components/theme-provider/theme-provider";
 import Header from "@/components/header/Header";
+import { ReactQueryProvider } from "@/providers/QueryClientProvider"; // Import ReactQueryProvider
+import { TokenProvider } from "@/context/TokenContext"; // Import TokenProvider
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -21,19 +24,20 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-             <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <Header/>
-        {children}
-        <BottomNavigation />
-        </ThemeProvider>
+      <head>
+        <title>{metadata.title}</title>
+        <meta name="description" content={metadata.description} />
+      </head>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <ReactQueryProvider>
+          <TokenProvider>
+            <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+              <Header />
+              {children}
+              <BottomNavigation />
+            </ThemeProvider>
+          </TokenProvider>
+        </ReactQueryProvider>
       </body>
     </html>
   );
