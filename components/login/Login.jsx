@@ -7,6 +7,13 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
+import { useToken } from "@/context/TokenContext";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
+import { toast } from "sonner";
 
 const LoginPage = () => {
   const [step, setStep] = useState(0);
@@ -15,30 +22,11 @@ const LoginPage = () => {
   const [remainingTime, setRemainingTime] = useState(null);
   const [otpSent, setOtpSent] = useState(false);
 
-  const { mutate: generateOtpMutation, isLoading: isGeneratingOtp } = useOtpGenerate();
-  const { mutate: confirmOtpMutation, isLoading: isConfirmingOtp } = useOtpConfirm();
-
-  // Load saved state from localStorage
-  useEffect(() => {
-    const savedStep = localStorage.getItem("step");
-    const savedPhoneNumber = localStorage.getItem("phoneNumber");
-    const savedRemainingTime = localStorage.getItem("remainingTime");
-
-    if (savedStep) setStep(Number(savedStep));
-    if (savedPhoneNumber) setPhoneNumber(savedPhoneNumber);
-    if (savedRemainingTime) setRemainingTime(Number(savedRemainingTime));
-  }, []);
-
-  // Save state to localStorage
-  useEffect(() => {
-    localStorage.setItem("step", step);
-    localStorage.setItem("phoneNumber", phoneNumber);
-    if (remainingTime) {
-      localStorage.setItem("remainingTime", remainingTime);
-    } else {
-      localStorage.removeItem("remainingTime");
-    }
-  }, [step, phoneNumber, remainingTime]);
+  const { mutate: generateOtpMutation, isLoading: isGeneratingOtp } =
+    useOtpGenerate();
+  const { mutate: confirmOtpMutation, isLoading: isConfirmingOtp } =
+    useOtpConfirm();
+  const { setAuthToken } = useToken(); // Use TokenContext to set the auth token
 
   // Handle OTP countdown timer
   useEffect(() => {
@@ -71,10 +59,13 @@ const LoginPage = () => {
       onSuccess: (data) => {
         setStep(1); // Move to OTP input step only after success
         setOtpSent(true);
-        setRemainingTime(data?.remainingTime || 60); // Store remaining time
+        setRemainingTime(data?.data?.remainingTime || 60); // Store remaining time
       },
       onError: (error) => {
-        console.error("Error generating OTP:", error?.response?.data || error?.message);
+        console.error(
+          "Error generating OTP:",
+          error?.response?.data || error?.message
+        );
       },
     });
   };
@@ -86,79 +77,103 @@ const LoginPage = () => {
       return;
     }
 
-    confirmOtpMutation({ phoneNumber, otpCode }, {
-      onSuccess: (data) => {
-        alert("OTP verified successfully!");
-        console.log("Login success:", data);
-      },
-      onError: (error) => {
-        console.error("OTP Confirmation Error:", error?.response?.data || error?.message);
-      },
-    });
+    confirmOtpMutation(
+      { phoneNumber, otpCode },
+      {
+        onSuccess: (data) => {
+          const token = data.message; // Extract JWT token from response
+          setAuthToken(token); // Store in Context + Cookie
+          toast.success("با موفقیت وارد شدید.", { duration: 3000 });
+        },
+        onError: (error) => {
+          toast.error("خطایی رخ داد.", { duration: 3000 });
+        },
+      }
+    );
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <Card className="w-full max-w-sm shadow-lg">
-        <CardHeader>
-          <CardTitle className="text-center">Login</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Tabs value={String(step)} className="w-full">
-            <TabsList className="grid grid-cols-2 w-full">
-              <TabsTrigger value="0" disabled={otpSent}>Phone</TabsTrigger>
-              <TabsTrigger value="1" disabled={!otpSent}>OTP</TabsTrigger>
-            </TabsList>
+    <Card className="w-full max-w-sm shadow-lg">
+      <CardHeader>
+        <CardTitle className="text-center">ورود</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <Tabs value={String(step)} className="w-full">
+          <TabsList className="grid grid-cols-2 w-full">
+            <TabsTrigger value="0" disabled={otpSent}>
+              شماره موبایل
+            </TabsTrigger>
+            <TabsTrigger value="1" disabled={!otpSent}>
+              کد فعالسازی
+            </TabsTrigger>
+          </TabsList>
 
-            <Progress value={step === 0 ? 50 : 100} className="my-4" />
+          <Progress value={step === 0 ? 50 : 100} className="my-4" />
 
-            {/* Step 1: Enter Phone Number */}
-            <TabsContent value="0">
-              <Input
-                type="tel"
-                placeholder="Enter phone number"
-                value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
-              />
-              <Button
-                className="mt-4 w-full"
-                onClick={handleNext}
-                disabled={!phoneNumber || isGeneratingOtp || otpSent}
-              >
-                {isGeneratingOtp ? "Generating OTP..." : otpSent ? `OTP sent, wait ${remainingTime}s` : "Next"}
-              </Button>
-            </TabsContent>
+          {/* Step 1: Enter Phone Number */}
+          <TabsContent value="0">
+            <Input
+              className="tracking-widest"
+              type="tel "
+              placeholder="09*********"
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+              maxLength={11} // Limit to 10 digits
+            />
+            <Button
+              className="mt-4 w-full"
+              onClick={handleNext}
+              disabled={!phoneNumber || isGeneratingOtp || otpSent}
+            >
+              {isGeneratingOtp
+                ? "Generating OTP..."
+                : otpSent
+                ? `OTP sent, wait ${remainingTime}s`
+                : "دریافت کد "}
+            </Button>
+          </TabsContent>
 
-            {/* Step 2: Enter OTP */}
-            <TabsContent value="1">
-              <Input
-                type="text"
-                placeholder="Enter OTP"
-                value={otpCode}
-                onChange={(e) => setOtpCode(e.target.value)}
-              />
-              {remainingTime && (
-                <div className="text-sm text-gray-600 mt-2">
-                  <p>Time remaining: {remainingTime}s</p>
-                </div>
-              )}
-              <div className="flex gap-2 mt-4">
-                <Button variant="outline" className="w-full" onClick={() => setStep(0)} disabled={otpSent}>
-                  Back
-                </Button>
-                <Button
-                  className="w-full"
-                  onClick={handleVerify}
-                  disabled={!otpCode || isConfirmingOtp}
-                >
-                  {isConfirmingOtp ? "Verifying..." : "Verify"}
-                </Button>
+          {/* Step 2: Enter OTP */}
+          <TabsContent value="1">
+            <InputOTP
+              maxLength={6}
+              value={otpCode}
+              onChange={(value) => setOtpCode(value)}
+            >
+              <InputOTPGroup>
+                <InputOTPSlot index={0} />
+                <InputOTPSlot index={1} />
+                <InputOTPSlot index={2} />
+                <InputOTPSlot index={3} />
+                <InputOTPSlot index={4} />
+                <InputOTPSlot index={5} />
+              </InputOTPGroup>
+            </InputOTP>
+            {remainingTime && (
+              <div className="text-sm text-gray-600 mt-2">
+                <p>زمان باقی مانده: {remainingTime}s</p>
               </div>
-            </TabsContent>
-          </Tabs>
-        </CardContent>
-      </Card>
-    </div>
+            )}
+            <div className="flex gap-2 mt-4">
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={() => setStep(0)} 
+              >
+                بازگشت
+              </Button>
+              <Button
+                className="w-full"
+                onClick={handleVerify}
+                disabled={!otpCode || isConfirmingOtp}
+              >
+                {isConfirmingOtp ? "Verifying..." : "تایید"}
+              </Button>
+            </div>
+          </TabsContent>
+        </Tabs>
+      </CardContent>
+    </Card>
   );
 };
 

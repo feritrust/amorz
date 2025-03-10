@@ -5,6 +5,7 @@ import ThemeProvider from "@/components/theme-provider/theme-provider";
 import Header from "@/components/header/Header";
 import { ReactQueryProvider } from "@/providers/QueryClientProvider"; // Import ReactQueryProvider
 import { TokenProvider } from "@/context/TokenContext"; // Import TokenProvider
+import { Toaster } from "@/components/ui/sonner"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,6 +34,7 @@ export default function RootLayout({ children }) {
           <TokenProvider>
             <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
               <Header />
+              <Toaster />
               {children}
               <BottomNavigation />
             </ThemeProvider>

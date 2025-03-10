@@ -1,40 +1,40 @@
-"use client"; // Ensure this file is treated as a client component
+"use client"; // ✅ Add this at the top
 
-import { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { setCookie, getCookie, deleteCookie } from "@/utils/cookie"; // ✅ Ensure this path is correct
 
-// Create the context
-const TokenContext = createContext(null);
+const TokenContext = createContext();
 
-// Provide token functions and state
+export const useToken = () => {
+  return useContext(TokenContext);
+};
+
 export const TokenProvider = ({ children }) => {
   const [token, setToken] = useState(null);
 
-  // Load token from localStorage when the app starts
+  // Initialize token from cookie if available
   useEffect(() => {
-    const storedToken = localStorage.getItem("authToken");
-    if (storedToken) {
-      setToken(storedToken);
+    const savedToken = getCookie("authToken");
+    if (savedToken) {
+      setToken(savedToken);
     }
   }, []);
 
-  // Save token to localStorage and state
-  const saveToken = (newToken) => {
+  const setAuthToken = (newToken) => {
     setToken(newToken);
-    localStorage.setItem("authToken", newToken);
+    setCookie("authToken", newToken, { path: "/", secure: true, sameSite: "Strict" });
   };
 
-  // Remove token (logout)
-  const removeToken = () => {
+  const removeAuthToken = () => {
     setToken(null);
-    localStorage.removeItem("authToken");
+    deleteCookie("authToken");
+    deleteCookie("phoneNumber");
+
   };
 
   return (
-    <TokenContext.Provider value={{ token, saveToken, removeToken }}>
+    <TokenContext.Provider value={{ token, setAuthToken, removeAuthToken }}>
       {children}
     </TokenContext.Provider>
   );
 };
-
-// Custom hook to use Token Context
-export const useToken = () => useContext(TokenContext);
