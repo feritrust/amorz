@@ -14,6 +14,7 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { toast } from "sonner";
+import { toEnglishDigits } from "@/utils/convertNumbers";
 
 const LoginPage = () => {
   const [step, setStep] = useState(0);
@@ -55,7 +56,7 @@ const LoginPage = () => {
       return;
     }
 
-    generateOtpMutation(phoneNumber, {
+    generateOtpMutation(toEnglishDigits(phoneNumber), {
       onSuccess: (data) => {
         setStep(1); // Move to OTP input step only after success
         setOtpSent(true);
@@ -78,7 +79,10 @@ const LoginPage = () => {
     }
 
     confirmOtpMutation(
-      { phoneNumber, otpCode },
+      {
+        phoneNumber: toEnglishDigits(phoneNumber),
+        otpCode: toEnglishDigits(otpCode),
+      },
       {
         onSuccess: (data) => {
           const token = data.message; // Extract JWT token from response
@@ -114,10 +118,10 @@ const LoginPage = () => {
           <TabsContent value="0">
             <Input
               className="tracking-widest"
-              type="tel "
+              type="tel"
               placeholder="09*********"
               value={phoneNumber}
-              onChange={(e) => setPhoneNumber(e.target.value)}
+              onChange={(e) => setPhoneNumber(toEnglishDigits(e.target.value))}
               maxLength={11} // Limit to 10 digits
             />
             <Button
@@ -138,7 +142,7 @@ const LoginPage = () => {
             <InputOTP
               maxLength={6}
               value={otpCode}
-              onChange={(value) => setOtpCode(value)}
+              onChange={(value) => setOtpCode(toEnglishDigits(value))}
             >
               <InputOTPGroup>
                 <InputOTPSlot index={0} />
@@ -158,7 +162,7 @@ const LoginPage = () => {
               <Button
                 variant="outline"
                 className="w-full"
-                onClick={() => setStep(0)} 
+                onClick={() => setStep(0)}
               >
                 بازگشت
               </Button>

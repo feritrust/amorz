@@ -1,13 +1,11 @@
-import LoginPage from "@/components/login/Login"
-
+import LoginPage from "@/components/login/Login";
 
 const Login = () => {
-
   return (
-    <div className="flex items-center justify-center  bg-gray-100">
-    <LoginPage />
-  </div>
-  )
-}
+    <div className="flex items-center justify-center pt-5 ">
+      <LoginPage />
+    </div>
+  );
+};
 
-export default Login
+export default Login;
