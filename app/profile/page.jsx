@@ -4,11 +4,13 @@ import { useToken } from "@/context/TokenContext";
 import { useState, useEffect } from "react";
 import { getCookie } from "@/utils/cookie";
 import LoginPage from "@/app/login/page"; // ✅ Import Login Component
+import { useGetUser } from "@/hook/useGetUser";
 
 const ProfilePage = () => {
   const { token, removeAuthToken } = useToken();
   const [phoneNumber, setPhoneNumber] = useState("");
-
+  const { data } = useGetUser(token);
+  console.log("user" , data)
   useEffect(() => {
     if (token) {
       const storedPhoneNumber = getCookie("phoneNumber");

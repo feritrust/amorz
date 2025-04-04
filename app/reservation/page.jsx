@@ -1,8 +1,9 @@
+import Reservation from '@/components/reservation/reservation'
 import React from 'react'
 
 const ReservationPage = () => {
   return (
-    <div>ReservationPage</div>
+  <Reservation />
   )
 }
 
