@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/input-otp";
 import { toast } from "sonner";
 import { toEnglishDigits } from "@/utils/convertNumbers";
-
+import { useRouter } from "next/navigation";
 const LoginPage = () => {
   const [step, setStep] = useState(0);
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -27,9 +27,9 @@ const LoginPage = () => {
     useOtpGenerate();
   const { mutate: confirmOtpMutation, isLoading: isConfirmingOtp } =
     useOtpConfirm();
-  const { setAuthToken } = useToken(); // Use TokenContext to set the auth token
+  const { setAuthToken } = useToken(); 
+const router = useRouter();
 
-  // Handle OTP countdown timer
   useEffect(() => {
     if (remainingTime && remainingTime > 0) {
       const timer = setInterval(() => {
@@ -49,7 +49,6 @@ const LoginPage = () => {
     }
   }, [remainingTime]);
 
-  // Handle OTP generation
   const handleNext = () => {
     if (!phoneNumber) {
       alert("Please enter your phone number.");
@@ -58,9 +57,9 @@ const LoginPage = () => {
 
     generateOtpMutation(toEnglishDigits(phoneNumber), {
       onSuccess: (data) => {
-        setStep(1); // Move to OTP input step only after success
+        setStep(1); 
         setOtpSent(true);
-        setRemainingTime(data?.data?.remainingTime || 60); // Store remaining time
+        setRemainingTime(data?.data?.remainingTime || 60);
       },
       onError: (error) => {
         console.error(
@@ -71,7 +70,7 @@ const LoginPage = () => {
     });
   };
 
-  // Handle OTP confirmation
+
   const handleVerify = () => {
     if (!otpCode) {
       alert("Please enter the OTP.");
@@ -85,8 +84,9 @@ const LoginPage = () => {
       },
       {
         onSuccess: (data) => {
-          const token = data.message; // Extract JWT token from response
-          setAuthToken(token); // Store in Context + Cookie
+          const token = data.message; 
+          setAuthToken(token);
+          router.push("/profile"); 
           toast.success("با موفقیت وارد شدید.", { duration: 3000 });
         },
         onError: (error) => {
@@ -114,7 +114,7 @@ const LoginPage = () => {
 
           <Progress value={step === 0 ? 50 : 100} className="my-4" />
 
-          {/* Step 1: Enter Phone Number */}
+  
           <TabsContent value="0">
             <Input
               className="tracking-widest"
@@ -122,7 +122,7 @@ const LoginPage = () => {
               placeholder="09*********"
               value={phoneNumber}
               onChange={(e) => setPhoneNumber(toEnglishDigits(e.target.value))}
-              maxLength={11} // Limit to 10 digits
+              maxLength={11} 
             />
             <Button
               className="mt-4 w-full"
@@ -137,7 +137,7 @@ const LoginPage = () => {
             </Button>
           </TabsContent>
 
-          {/* Step 2: Enter OTP */}
+
           <TabsContent value="1">
             <InputOTP
               maxLength={6}
@@ -155,7 +155,7 @@ const LoginPage = () => {
             </InputOTP>
             {remainingTime && (
               <div className="text-sm text-gray-600 mt-2">
-                <p>زمان باقی مانده: {remainingTime}s</p>
+                <p>زمان باقی مانده: {remainingTime}ثانیه</p>
               </div>
             )}
             <div className="flex gap-2 mt-4">

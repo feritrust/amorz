@@ -1,11 +1,12 @@
-import { Geist, Geist_Mono } from "next/font/google";
+
 import "./globals.css";
-import BottomNavigation from '../components/BottomNavigation/BottomNavigation';
-import ThemeProvider from "@/components/theme-provider/theme-provider";
-import Header from "@/components/header/Header";
-import { ReactQueryProvider } from "@/providers/QueryClientProvider"; // Import ReactQueryProvider
-import { TokenProvider } from "@/context/TokenContext"; // Import TokenProvider
+import BottomNavigation from '../components/layout/BottomNavigation/BottomNavigation';
+import ThemeProvider from "@/components/layout/theme-provider/theme-provider";
+import Header from "@/components/layout/header/Header";
+import { ReactQueryProvider } from "@/providers/QueryClientProvider";
+import { TokenProvider } from "@/context/TokenContext"; 
 import { Toaster } from "@/components/ui/sonner"
+import Footer from "@/components/layout/footer/Footer";
 
 
 
@@ -16,23 +17,24 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="fa" dir="rtl" >
-      <head>
-        <title>{metadata.title}</title>
-        <meta name="description" content={metadata.description} />
-      </head>
-      <body className={`font-iranYekan antialiased`}>
-        <ReactQueryProvider>
-          <TokenProvider>
-            <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-              <Header />
-              <Toaster />
-              {children}
-              <BottomNavigation />
-            </ThemeProvider>
-          </TokenProvider>
-        </ReactQueryProvider>
-      </body>
-    </html>
+    <html lang="fa" dir="rtl">
+    <head>
+      <title>{metadata.title}</title>
+      <meta name="description" content={metadata.description} />
+    </head>
+    <body className="font-iranYekan antialiased flex flex-col min-h-screen">
+      <ReactQueryProvider>
+        <TokenProvider>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+            <Header />
+            <Toaster />
+            <main className="flex-grow">{children}</main> 
+            <Footer /> 
+            <BottomNavigation />
+          </ThemeProvider>
+        </TokenProvider>
+      </ReactQueryProvider>
+    </body>
+  </html>
   );
 }

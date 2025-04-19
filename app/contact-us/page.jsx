@@ -1,12 +1,8 @@
-import React from 'react'
-import ContactUs from '@/components/contactus/contactus'
+import React from "react";
+import ContactUs from "@/components/contactus/contactus";
 
 const ContactUsPage = () => {
-  return (
-    <div>
-      <ContactUs />
-    </div>
-  )
-}
+  return <ContactUs />;
+};
 
-export default ContactUsPage
+export default ContactUsPage;

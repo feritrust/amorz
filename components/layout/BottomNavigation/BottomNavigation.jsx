@@ -1,8 +1,8 @@
-"use client"; 
+"use client";
 
 import Link from "next/link";
-import useNavigation from "@/hook/use-navigation"; // استفاده از هوک اصلاح شده
-import { useToken } from "@/context/TokenContext"; // import your TokenContext
+import useNavigation from "@/hook/use-navigation";
+import { useToken } from "@/context/TokenContext"; 
 import {
   HomeIcon as HomeOutline,
   CalendarDaysIcon as ReservationOutline,
@@ -19,59 +19,59 @@ import {
 } from "@heroicons/react/24/solid";
 
 const BottomNavigation = () => {
-  // استفاده از هوک برای مشخص کردن صفحه فعال
+
   const { isHomeActive, isProfileActive, isReservationActive, isAboutActive, isContactActive } =
     useNavigation();
 
-  // استفاده از TokenContext برای بررسی وضعیت ورود کاربر
-  const { token } = useToken(); // Getting the token from TokenContext
+
+  const { token } = useToken(); 
 
   return (
-    <div className="fixed bottom-0 w-full h-[75px] py-4 z-10 bg-gray-100 custom-shadow sm:hidden">
+    <div className="fixed bottom-0 w-full h-[75px] py-4 z-10 bg-gray-100 dark:bg-gray-800 custom-shadow sm:hidden">
       <div className="flex justify-around items-center w-full">
-        {/* Home */}
+       
         <Link
           href="/"
-          className={`flex flex-col items-center w-16 text-center ${isHomeActive ? "text-black" : "text-gray-500"}`}
+          className={`flex flex-col items-center w-16 text-center ${isHomeActive ? "text-black dark:text-white" : "text-gray-500 dark:text-gray-400"}`}
         >
           {isHomeActive ? <HomeSolid className="h-6 w-6" /> : <HomeOutline className="h-6 w-6" />}
           <span className="text-sm">خانه</span>
         </Link>
 
-        {/* About Us */}
+     
         <Link
           href="/about"
-          className={`flex flex-col items-center w-16 text-center ${isAboutActive ? "text-black" : "text-gray-500"}`}
+          className={`flex flex-col items-center w-16 text-center ${isAboutActive ? "text-black dark:text-white" : "text-gray-500 dark:text-gray-400"}`}
         >
           {isAboutActive ? <AboutSolid className="h-6 w-6" /> : <AboutOutline className="h-6 w-6" />}
           <span className="text-sm">درباره ما</span>
         </Link>
 
-        {/* Reservation */}
+  
         <Link
           href="/reservation"
-          className={`flex flex-col items-center w-16 text-center ${isReservationActive ? "text-black" : "text-gray-500"}`}
+          className={`flex flex-col items-center w-16 text-center ${isReservationActive ? "text-black dark:text-white" : "text-gray-500 dark:text-gray-400"}`}
         >
           {isReservationActive ? <ReservationSolid className="h-6 w-6" /> : <ReservationOutline className="h-6 w-6" />}
           <span className="text-sm">رزرو</span>
         </Link>
 
-        {/* Contact Us */}
+
         <Link
           href="/contact-us"
-          className={`flex flex-col items-center w-16 text-center ${isContactActive ? "text-black" : "text-gray-500"}`}
+          className={`flex flex-col items-center w-16 text-center ${isContactActive ? "text-black dark:text-white" : "text-gray-500 dark:text-gray-400"}`}
         >
           {isContactActive ? <ContactSolid className="h-6 w-6" /> : <ContactOutline className="h-6 w-6" />}
           <span className="text-sm">تماس با ما</span>
         </Link>
 
-        {/* Profile or Login */}
+     
         <Link
-          href={token ? "/profile" : "/login"} // If the user has a token, they are logged in, otherwise go to login page
-          className={`flex flex-col items-center w-16 text-center ${isProfileActive ? "text-black" : "text-gray-500"}`}
+          href={token ? "/profile" : "/login"} 
+          className={`flex flex-col items-center w-16 text-center ${isProfileActive ? "text-black dark:text-white" : "text-gray-500 dark:text-gray-400"}`}
         >
           {isProfileActive ? <UserSolid className="h-6 w-6" /> : <UserOutline className="h-6 w-6" />}
-          <span className="text-sm">{token ? "پروفایل" : "ورود"}</span> {/* Conditionally render the text */}
+          <span className="text-sm">{token ? "پروفایل" : "ورود"}</span>
         </Link>
       </div>
     </div>

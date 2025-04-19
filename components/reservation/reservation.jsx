@@ -5,36 +5,32 @@ import { useGetUser } from "@/hook/useGetUser";
 import { useToken } from "@/context/TokenContext";
 import { useGetFields } from "@/hook/useGetFields";
 import { Combobox } from "../ui/combobox";
+import { useUnavailableDates } from "@/hooks/useUnavailableDates";
+import { useCoaches } from "@/hooks/useCoaches";
+import { useTimes } from "@/hooks/useTimes";
+import { useSubmitReservation } from "@/hooks/useSubmitReservation";
+
 const Reservation = () => {
   const { token } = useToken();
-  const [name, setName] = useState("special fee");
-  const [field, setField] = useState("");
-  const [teammates, setTeammates] = useState([]);
-  const [discount, setDiscount] = useState(false);
-  const [coaches, setCoaches] = useState([]);
-  const [query, setQuery] = useState("");
-  const [selectedCoach, setSelectedCoach] = useState(null);
-  console.log("selected coach", selectedCoach);
-  console.log("teammates", teammates);
   const { data: user } = useGetUser(token);
   const { data: fields } = useGetFields();
-  console.log("fields", fields);
-  console.log(user?.role);
-  const [times, setTimes] = useState([]);
-  const [price, setPrice] = useState(0);
+
+  const [field, setField] = useState("");
+  const [query, setQuery] = useState("");
+  const [selectedCoach, setSelectedCoach] = useState(null);
   const [currentYear, setCurrentYear] = useState(moment().locale("fa").jYear());
   const [currentMonth, setCurrentMonth] = useState(
     moment().locale("fa").jMonth() + 1
   );
   const [selectedDate, setSelectedDate] = useState(null);
   const [selections, setSelections] = useState([]);
-  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [repeatWeeks, setRepeatWeeks] = useState({});
   const [highlightedDates, setHighlightedDates] = useState([]);
   const [error, setError] = useState(null);
+  const [name, setName] = useState("");
+  const [discount, setDiscount] = useState("");
+  const [price, setPrice] = useState("");
 
-  const [unavailableDates, setUnavailableDates] = useState({});
-  console.log("unavailable date", unavailableDates);
   const getDateRange = (year, month) => {
     const fromDate = moment(`${year}/${month}/1`, "jYYYY/jMM/jDD").format(
       "YYYY-MM-DD"
@@ -45,63 +41,47 @@ const Reservation = () => {
     return { fromDate, toDate };
   };
 
-  useEffect(() => {
-    // Fetch coaches data from the API
-    const fetchCoaches = async () => {
-      try {
-        const response = await fetch(
-          `http://88.99.55.86:3000/users/?role=coach&phoneNumber=${query}`
-        );
-        const data = await response.json();
-        setCoaches(data.data); // Assuming the API returns an array of coaches
-      } catch (error) {
-        console.error("Error fetching coaches:", error);
-      }
-    };
+  const { fromDate, toDate } = getDateRange(currentYear, currentMonth);
 
-    fetchCoaches();
-  }, [query]);
-  console.log("query", query);
+ 
+  const {
+    data: unavailableDates = {},
+    isLoading: isUnavailableDatesLoading,
+    error: unavailableDatesError,
+  } = useUnavailableDates(fromDate, toDate, field);
 
-  // Filter coaches based on the query
+  const {
+    data: coaches,
+    isLoading: isCoachesLoading,
+    error: coachesError,
+  } = useCoaches(query);
 
-  useEffect(() => {
-    const fetchUnavailableDates = async () => {
-      const { fromDate, toDate } = getDateRange(currentYear, currentMonth);
-      try {
-        const response = await fetch(
-          `http://88.99.55.86:3000/reserve-dates/between-dates?from_date=${fromDate}&to_date=${toDate}&field=${field}`
-        );
-        if (!response.ok) {
-          throw new Error("Failed to fetch unavailable dates");
-        }
-        const result = await response.json();
+  const {
+    data: times,
+    isLoading: isTimesLoading,
+    error: timesError,
+  } = useTimes();
 
-        const transformedData = result.data.reduce((acc, item) => {
-          const date = moment(item.date).format("jYYYY/jMM/jDD");
+  const mutation = useSubmitReservation(token);
 
-          if (!acc[date]) {
-            acc[date] = [];
-          }
+  const handleSubmit = () => {
+    const convertedSelections = selections.map((selection) => ({
+      ...selection,
+      first_date: moment(selection.first_date, "jYYYY/jMM/jDD").format(
+        "YYYY-MM-DD"
+      ),
+      dates: selection.dates.map((date) =>
+        moment(date, "jYYYY/jMM/jDD").format("YYYY-MM-DD")
+      ),
+    }));
 
-          acc[date].push({
-            id: item.time._id,
-            name: item.reservation?.name || "Unknown", // fallback if name is missing
-          });
+    mutation.mutate({
+      selections: convertedSelections,
+      user: user?._id ?? "",
+      field: field ?? "",
+    });
+  };
 
-          return acc;
-        }, {});
-
-        console.log("data", transformedData);
-        setUnavailableDates(transformedData);
-      } catch (err) {
-        console.error(err);
-        setError("Unable to fetch unavailable dates");
-      }
-    };
-
-    fetchUnavailableDates();
-  }, [currentYear, currentMonth, field]);
   const generateCalendarDays = (year, month) => {
     const daysInMonth = moment(
       `${year}/${month}/1`,
@@ -220,7 +200,8 @@ const Reservation = () => {
         acc.push(`${date}: ${time} (Already selected)`);
       }
 
-      if (unavailableDates[date]?.includes(time)) {
+
+      if (unavailableDates?.[date]?.includes(time)) {
         acc.push(`${date}: ${time} (Unavailable)`);
       }
 
@@ -246,33 +227,15 @@ const Reservation = () => {
     setError(null);
   };
 
-  useEffect(() => {
-    const fetchTimes = async () => {
-      try {
-        const response = await fetch("http://88.99.55.86:3000/times");
-        if (!response.ok) {
-          throw new Error("Failed to fetch times");
-        }
-        const data = await response.json();
-        setTimes(data.data);
-      } catch (err) {
-        console.error(err);
-        alert("Failed to fetch times. Please try again.");
-      }
-    };
-
-    fetchTimes();
-  }, []);
-
   const removeSelection = (index) => {
     const updatedSelections = [...selections];
     updatedSelections.splice(index, 1);
     setSelections(updatedSelections);
   };
 
-const isTimeReserved = (date, timeId) => {
-  return unavailableDates[date]?.find((entry) => entry.id === timeId);
-};
+  const isTimeReserved = (date, timeId) => {
+    return unavailableDates[date]?.find((entry) => entry.id === timeId);
+  };
   const isDisabled = (date, time) => {
     if (isTimeReserved(date, time)) {
       const reservedEntry = isTimeReserved(date, time);
@@ -315,7 +278,7 @@ const isTimeReserved = (date, timeId) => {
       <div className="relative w-64  ">
         <select
           className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
-          onChange={(e) => setField(e.target.value)} // Replace with your handler
+          onChange={(e) => setField(e.target.value)}
         >
           <option value="">Select a field</option>
           {fields?.map((field) => (
@@ -536,54 +499,7 @@ const isTimeReserved = (date, timeId) => {
             />
           )}
           <button
-            onClick={async () => {
-              try {
-                const convertedSelections = selections.map((selection) => {
-                  return {
-                    ...selection,
-                    first_date: moment(
-                      selection.first_date,
-                      "jYYYY/jMM/jDD"
-                    ).format("YYYY-MM-DD"), // Convert Shamsi to Miladi
-                    dates: selection.dates.map((date) =>
-                      moment(date, "jYYYY/jMM/jDD").format("YYYY-MM-DD")
-                    ), // Convert all dates
-                  };
-                });
-
-                const response = await fetch(
-                  "http://88.99.55.86:3000/reservations",
-                  {
-                    method: "POST",
-                    headers: {
-                      "Content-Type": "application/json",
-                      Authorization: `Bearer ${token}`,
-                    },
-
-                    body: JSON.stringify({
-                      selections: convertedSelections,
-                      user: user?._id ?? "",
-                      name: name ?? "",
-                      field: field ?? "",
-                      discount: discount ?? "",
-                      price: price ?? "",
-                      teammates: teammates,
-                    }),
-                  }
-                );
-
-                if (!response.ok) {
-                  throw new Error("Failed to submit selections");
-                }
-
-                const result = await response.json();
-                console.log("Submission successful:", result);
-                alert("Selections submitted successfully!");
-              } catch (err) {
-                console.error("err", err);
-                alert("Failed to submit selections. Please try again.");
-              }
-            }}
+            onClick={handleSubmit}
             className="px-4 py-2 mt-4 text-white bg-blue-500 rounded hover:bg-blue-600"
           >
             Submit Selections

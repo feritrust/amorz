@@ -1,9 +1,10 @@
-import LandingPage from "@/components/landingpage/LandingPage";
+import Home from '@/components/home/home'
+import React from 'react'
 
-export default function Home() {
+const HomePage = () => {
   return (
-    <div>
-      <LandingPage />
-    </div>
-  );
+   <Home />
+  )
 }
+
+export default HomePage
