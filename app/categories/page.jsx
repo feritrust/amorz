@@ -64,9 +64,7 @@ export default async function CategoriesPage() {
                 </div>
               )}
               <h2 style={{ fontSize: 18, marginBottom: 6 }}>{cat.name}</h2>
-              <p style={{ fontSize: 13, color: '#6b7280' }}>
-                ترتیب نمایش: {cat.sortOrder}
-              </p>
+             
             </a>
           ))}
         </div>

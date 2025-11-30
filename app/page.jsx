@@ -105,9 +105,7 @@ export default async function HomePage() {
                   <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
                     {cat.name}
                   </h3>
-                  <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-1">
-                    ترتیب نمایش: {cat.sortOrder}
-                  </p>
+                  
                 </div>
               </a>
             ))}
