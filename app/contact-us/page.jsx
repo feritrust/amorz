@@ -1,8 +1,11 @@
-import React from "react";
+// app/contact-us/page.jsx
 import ContactUs from "@/components/contactus/contactus";
 
-const ContactUsPage = () => {
-  return <ContactUs />;
+export const metadata = {
+  title: "تماس با ما | خدمات بهشت زهرا",
+  description: "راه‌های تماس و ثبت سفارش خدمات بهشت زهرا: گل، تاج گل، میز و صندلی.",
 };
 
-export default ContactUsPage;
+export default function ContactUsPage() {
+  return <ContactUs />;
+}

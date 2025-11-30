@@ -1,81 +1,101 @@
 "use client";
 
 import Link from "next/link";
-import useNavigation from "@/hook/use-navigation";
-import { useToken } from "@/context/TokenContext"; 
+import { usePathname } from "next/navigation";
+
 import {
   HomeIcon as HomeOutline,
-  CalendarDaysIcon as ReservationOutline,
+  Squares2X2Icon as CategoriesOutline,
   InformationCircleIcon as AboutOutline,
-  UserIcon as UserOutline,
   PhoneIcon as ContactOutline,
 } from "@heroicons/react/24/outline";
+
 import {
   HomeIcon as HomeSolid,
-  CalendarDaysIcon as ReservationSolid,
+  Squares2X2Icon as CategoriesSolid,
   InformationCircleIcon as AboutSolid,
-  UserIcon as UserSolid,
   PhoneIcon as ContactSolid,
 } from "@heroicons/react/24/solid";
 
-const BottomNavigation = () => {
+export default function BottomNavigation() {
+  const pathname = usePathname();
 
-  const { isHomeActive, isProfileActive, isReservationActive, isAboutActive, isContactActive } =
-    useNavigation();
-
-
-  const { token } = useToken(); 
+  const isActive = (href) => {
+    if (href === "/") return pathname === "/";
+    return pathname.startsWith(href);
+  };
 
   return (
-    <div className="fixed bottom-0 w-full h-[75px] py-4 z-10 bg-gray-100 dark:bg-gray-800 custom-shadow sm:hidden">
+    <div className="fixed bottom-0 w-full h-[75px] py-4 z-10 bg-gray-100 dark:bg-gray-800 border-t sm:hidden">
       <div className="flex justify-around items-center w-full">
-       
+        {/* خانه */}
         <Link
           href="/"
-          className={`flex flex-col items-center w-16 text-center ${isHomeActive ? "text-black dark:text-white" : "text-gray-500 dark:text-gray-400"}`}
+          className={`flex flex-col items-center w-16 text-center ${
+            isActive("/")
+              ? "text-black dark:text-white"
+              : "text-gray-500 dark:text-gray-400"
+          }`}
         >
-          {isHomeActive ? <HomeSolid className="h-6 w-6" /> : <HomeOutline className="h-6 w-6" />}
+          {isActive("/") ? (
+            <HomeSolid className="h-6 w-6" />
+          ) : (
+            <HomeOutline className="h-6 w-6" />
+          )}
           <span className="text-sm">خانه</span>
         </Link>
 
-     
+        {/* دسته‌بندی‌ها */}
+        <Link
+          href="/categories"
+          className={`flex flex-col items-center w-16 text-center ${
+            isActive("/categories")
+              ? "text-black dark:text-white"
+              : "text-gray-500 dark:text-gray-400"
+          }`}
+        >
+          {isActive("/categories") ? (
+            <CategoriesSolid className="h-6 w-6" />
+          ) : (
+            <CategoriesOutline className="h-6 w-6" />
+          )}
+          <span className="text-sm">دسته‌بندی‌ها</span>
+        </Link>
+
+        {/* خدمات ما (صفحه استاتیک AboutUs) */}
         <Link
           href="/about"
-          className={`flex flex-col items-center w-16 text-center ${isAboutActive ? "text-black dark:text-white" : "text-gray-500 dark:text-gray-400"}`}
+          className={`flex flex-col items-center w-16 text-center ${
+            isActive("/about")
+              ? "text-black dark:text-white"
+              : "text-gray-500 dark:text-gray-400"
+          }`}
         >
-          {isAboutActive ? <AboutSolid className="h-6 w-6" /> : <AboutOutline className="h-6 w-6" />}
-          <span className="text-sm">درباره ما</span>
+          {isActive("/about") ? (
+            <AboutSolid className="h-6 w-6" />
+          ) : (
+            <AboutOutline className="h-6 w-6" />
+          )}
+          <span className="text-sm">خدمات ما</span>
         </Link>
 
-  
-        <Link
-          href="/reservation"
-          className={`flex flex-col items-center w-16 text-center ${isReservationActive ? "text-black dark:text-white" : "text-gray-500 dark:text-gray-400"}`}
-        >
-          {isReservationActive ? <ReservationSolid className="h-6 w-6" /> : <ReservationOutline className="h-6 w-6" />}
-          <span className="text-sm">رزرو</span>
-        </Link>
-
-
+        {/* تماس با ما */}
         <Link
           href="/contact-us"
-          className={`flex flex-col items-center w-16 text-center ${isContactActive ? "text-black dark:text-white" : "text-gray-500 dark:text-gray-400"}`}
+          className={`flex flex-col items-center w-16 text-center ${
+            isActive("/contact-us")
+              ? "text-black dark:text-white"
+              : "text-gray-500 dark:text-gray-400"
+          }`}
         >
-          {isContactActive ? <ContactSolid className="h-6 w-6" /> : <ContactOutline className="h-6 w-6" />}
+          {isActive("/contact-us") ? (
+            <ContactSolid className="h-6 w-6" />
+          ) : (
+            <ContactOutline className="h-6 w-6" />
+          )}
           <span className="text-sm">تماس با ما</span>
-        </Link>
-
-     
-        <Link
-          href={token ? "/profile" : "/login"} 
-          className={`flex flex-col items-center w-16 text-center ${isProfileActive ? "text-black dark:text-white" : "text-gray-500 dark:text-gray-400"}`}
-        >
-          {isProfileActive ? <UserSolid className="h-6 w-6" /> : <UserOutline className="h-6 w-6" />}
-          <span className="text-sm">{token ? "پروفایل" : "ورود"}</span>
         </Link>
       </div>
     </div>
   );
-};
-
-export default BottomNavigation;
+}

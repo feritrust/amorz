@@ -1,7 +1,12 @@
-
+// app/about/page.jsx
 import AboutUs from "@/components/about/aboutUs";
-const AboutUsPage = () => {
-  return <AboutUs />;
+
+export const metadata = {
+  title: "درباره ما | خدمات بهشت زهرا",
+  description:
+    "آشنایی با خدمات بهشت زهرا؛ رزرو آنلاین تاج گل، گل، میز و صندلی و سایر خدمات مراسم ختم با احترام و نظم کامل.",
 };
 
-export default AboutUsPage;
+export default function AboutUsPage() {
+  return <AboutUs />;
+}

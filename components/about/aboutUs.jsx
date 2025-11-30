@@ -1,3 +1,4 @@
+// components/about/aboutUs.jsx
 import React from "react";
 import {
   Card,
@@ -10,54 +11,70 @@ import {
 
 const AboutUs = () => {
   return (
-    <div className="container mx-auto p-4">
+    <main className="container mx-auto p-4" dir="rtl">
       <Card className="max-w-4xl mx-auto">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold">
-            درباره رزرو زمین پدل
-          </CardTitle>
+          <h1 className="text-2xl font-bold">
+            درباره خدمات بهشت زهرا
+          </h1>
         </CardHeader>
-        <CardContent>
-          <CardDescription className="mb-4">
-            در دنیای پدل، داشتن دسترسی آسان و راحت به زمین‌های باکیفیت برای
-            تمرین و مسابقه اهمیت زیادی دارد. ما در تلاش هستیم تا تجربه‌ای
-            بی‌نظیر از رزرو زمین پدل را برای شما فراهم کنیم. با ارائه یک سیستم
-            رزرو آنلاین ساده و کاربرپسند، شما می‌توانید به سرعت و راحتی زمین
-            مورد نظر خود را برای هر زمان و تاریخ که نیاز دارید، رزرو کنید.
-          </CardDescription>
-          <CardTitle className="text-xl font-semibold mb-2">
-            چرا رزرو زمین پدل با ما؟
-          </CardTitle>
-          <CardDescription className="mb-4">
-            - **دسترسی آسان:** با سیستم رزرو آنلاین ما، می‌توانید از هر مکانی و
-            در هر زمان زمین پدل را رزرو کنید.
-            <br />
-            - **تنوع زمین‌ها:** زمین‌های ما با استانداردهای بین‌المللی ساخته
-            شده‌اند تا شما بتوانید تجربه‌ای حرفه‌ای و دلپذیر داشته باشید.
-            <br />
-            - **امکانات ویژه:** امکانات مختلفی مانند نورپردازی مناسب، امکانات
-            رفاهی، و نظافت منظم به شما این امکان را می‌دهد که در بهترین شرایط
-            ممکن از بازی پدل لذت ببرید.
-            <br />- **رزرو راحت:** تنها با چند کلیک می‌توانید زمین دلخواه خود را
-            برای ساعت‌ها یا روزهای مورد نیاز رزرو کنید.
-          </CardDescription>
-          <CardTitle className="text-xl font-semibold mb-2">
-            نحوه رزرو
-          </CardTitle>
-          <CardDescription className="mb-4">
-            برای رزرو زمین پدل، تنها کافیست وارد سیستم رزرو آنلاین ما شوید، زمان
-            و تاریخ مورد نظر را انتخاب کنید، و رزرو خود را تایید نمایید. در کمتر
-            از چند دقیقه، می‌توانید از بازی و تمرین در بهترین زمین‌های پدل لذت
-            ببرید.
-          </CardDescription>
+
+        <CardContent className="space-y-6">
+          <section>
+            <CardDescription>
+              در لحظات سخت و حساس از دست دادن عزیزان، آرامش و اطمینان از روند
+              امور بسیار مهم است. ما در «خدمات بهشت زهرا» تلاش می‌کنیم تا کلیه
+              خدمات مورد نیاز شما مانند تاج گل، سبد گل، اجاره میز و صندلی و سایر
+              خدمات مرتبط با مراسم ختم را با نهایت دقت، احترام و نظم انجام دهیم.
+              هدف ما فراهم کردن تجربه‌ای آرام و بدون دغدغه برای خانواده‌هاست.
+            </CardDescription>
+          </section>
+
+          <section>
+            <CardTitle className="text-xl font-semibold mb-2">
+              چرا خدمات ما را انتخاب کنید؟
+            </CardTitle>
+            <ul className="list-disc pr-5 space-y-2 text-gray-700 text-sm md:text-base">
+              <li>
+                <strong>پشتیبانی کامل:</strong> همراهی از لحظه فوت تا پایان
+                مراسم با مشاوره و راهنمایی کامل.
+              </li>
+              <li>
+                <strong>احترام به آداب و رسوم:</strong> اجرای دقیق مراحل شرعی و
+                عرفی با توجه به فرهنگ و باورهای خانواده‌ها.
+              </li>
+              <li>
+                <strong>تسهیل فرآیندها:</strong> امکان رزرو و پیگیری آنلاین
+                خدمات در بهشت زهرا و کاهش استرس و اتلاف وقت.
+              </li>
+              <li>
+                <strong>تجربه و تخصص:</strong> تیم مجرب و آموزش‌دیده برای انجام
+                امور با بالاترین کیفیت و احترام.
+              </li>
+            </ul>
+          </section>
+
+          <section>
+            <CardTitle className="text-xl font-semibold mb-2">
+              نحوه استفاده از خدمات
+            </CardTitle>
+            <CardDescription>
+              برای دریافت خدمات، می‌توانید از طریق سیستم آنلاین ما درخواست خود
+              را ثبت کنید تا مشاوران ما در کوتاه‌ترین زمان با شما تماس بگیرند.
+              همچنین امکان هماهنگی تلفنی برای رزرو تاج گل، گل‌آرایی، میز و
+              صندلی و سایر خدمات ویژه بهشت زهرا فراهم است. ما متعهد به ارائه
+              خدماتی آرام، منظم و با احترام هستیم.
+            </CardDescription>
+          </section>
         </CardContent>
+
         <CardFooter className="text-center">
-          <p className="text-gray-500">
-            &copy; {new Date().getFullYear()} شرکت شما. تمام حقوق محفوظ است.
+          <p className="text-gray-500 text-sm">
+            &copy; {new Date().getFullYear()} خدمات بهشت زهرا. تمامی حقوق محفوظ است.
           </p>
         </CardFooter>
       </Card>
-    </div>
+    </main>
   );
 };
 
