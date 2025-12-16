@@ -39,6 +39,9 @@ export default function AdminLayout({ children }) {
             <li style={{ marginBottom: 8 }}>
               <a href="/admin/articles">مقالات</a>
             </li>
+            <li style={{ marginBottom: 8 }}>
+  <a href="/admin/upload">آپلود عکس</a>
+</li>
 
             {/* دکمه خروج */}
             <li style={{ marginTop: 20 }}>

@@ -3,7 +3,7 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
 async function fetchCategories() {
-  const res = await fetch(`${API_URL}/categories`, {
+  const res = await fetch(`${API_URL}/api/categories`, {
     cache: 'no-store',
   });
 
@@ -64,7 +64,6 @@ export default async function CategoriesPage() {
                 </div>
               )}
               <h2 style={{ fontSize: 18, marginBottom: 6 }}>{cat.name}</h2>
-             
             </a>
           ))}
         </div>

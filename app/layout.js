@@ -27,7 +27,7 @@ export const metadata = {
         url: "/images/haven.jpg", // با metadataBase میشه آدرس کامل
         width: 1200,
         height: 630,
-        alt: "خدمات بهشت زهرا",
+        alt: "خدمات بهشت زهرا", 
       },
     ],
     locale: "fa_IR",
@@ -47,7 +47,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="fa" dir="rtl">
+    <html lang="fa" dir="rtl" suppressHydrationWarning>
       <body className="font-iranYekan antialiased flex flex-col min-h-screen">
         <ThemeProvider
           attribute="class"
@@ -65,3 +65,4 @@ export default function RootLayout({ children }) {
     </html>
   );
 }
+
