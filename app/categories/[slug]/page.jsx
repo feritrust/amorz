@@ -5,14 +5,17 @@ import Script from "next/script";
 import { notFound } from "next/navigation";
 import { apiFetch } from "@/lib/api";
 
+export const dynamic = "force-dynamic"; // ✅ کش رو فعلاً خاموش
+
+async function getCategoryBySlug(slug) {
+  const categories = (await apiFetch("/categories", { cache: "no-store" })) || [];
+  return categories.find((c) => c.slug === slug) || null;
+}
+
 export async function generateMetadata({ params }) {
-  const { slug } = await params;
+  const { slug } = params;
 
-  const category = await apiFetch(
-    `/categories/slug/${encodeURIComponent(slug)}`,
-    { next: { revalidate: 600 } }
-  ).catch(() => null);
-
+  const category = await getCategoryBySlug(slug);
   if (!category) return { title: "دسته‌بندی پیدا نشد" };
 
   const title = `${category.name} | دسته‌بندی خدمات`;
@@ -37,20 +40,15 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function CategoryDetailPage({ params }) {
-  const { slug } = await params;
+  const { slug } = params;
 
-  const category = await apiFetch(
-    `/categories/slug/${encodeURIComponent(slug)}`,
-    { next: { revalidate: 600 } }
-  ).catch(() => null);
-
+  const category = await getCategoryBySlug(slug);
   if (!category) notFound();
 
   const products =
-    (await apiFetch(
-      `/products?categoryId=${encodeURIComponent(category.id)}`,
-      { next: { revalidate: 120 } }
-    ).catch(() => [])) || [];
+    (await apiFetch(`/products?categoryId=${encodeURIComponent(category.id)}`, {
+      cache: "no-store",
+    }).catch(() => [])) || [];
 
   const breadcrumbJsonLd = {
     "@context": "https://schema.org",
@@ -96,7 +94,9 @@ export default async function CategoryDetailPage({ params }) {
       </Link>
 
       <header className="mt-4 mb-4">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{category.name}</h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+          {category.name}
+        </h1>
         <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
           {category.isActive ? "فعال" : "غیرفعال"}
         </p>

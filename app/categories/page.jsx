@@ -10,8 +10,10 @@ export const metadata = {
   alternates: { canonical: "https://amorz.ir/categories" },
 };
 
+export const dynamic = "force-dynamic"; // ✅ برای اینکه تو prod هم cached نشه
+
 export default async function CategoriesPage() {
-  const categories = (await apiFetch("/categories", { next: { revalidate: 600 } })) || [];
+  const categories = (await apiFetch("/categories", { cache: "no-store" })) || [];
 
   const itemListJsonLd = {
     "@context": "https://schema.org",
@@ -32,10 +34,14 @@ export default async function CategoriesPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }}
       />
 
-      <h1 className="text-2xl font-bold mb-5 text-gray-900 dark:text-white">دسته‌بندی‌ها</h1>
+      <h1 className="text-2xl font-bold mb-5 text-gray-900 dark:text-white">
+        دسته‌بندی‌ها
+      </h1>
 
       {categories.length === 0 ? (
-        <p className="text-sm text-gray-600 dark:text-gray-300">هیچ دسته‌بندی‌ای ثبت نشده است.</p>
+        <p className="text-sm text-gray-600 dark:text-gray-300">
+          هیچ دسته‌بندی‌ای ثبت نشده است.
+        </p>
       ) : (
         <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4">
           {categories.map((cat) => (
@@ -57,7 +63,9 @@ export default async function CategoriesPage() {
               )}
 
               <div className="p-3">
-                <h2 className="text-sm font-semibold text-gray-900 dark:text-white">{cat.name}</h2>
+                <h2 className="text-sm font-semibold text-gray-900 dark:text-white">
+                  {cat.name}
+                </h2>
               </div>
             </Link>
           ))}
