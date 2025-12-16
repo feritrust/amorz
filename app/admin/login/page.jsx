@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { apiFetch } from '@/lib/api';
+import { fetchJson } from '@/lib/api';
 
 export default function AdminLogin() {
   const router = useRouter();
@@ -16,7 +16,7 @@ export default function AdminLogin() {
     setLoading(true);
 
     try {
-      await apiFetch('/admin/login', {
+      await fetchJson('/admin/login', {
         method: 'POST',
         body: JSON.stringify({ password }),
       });

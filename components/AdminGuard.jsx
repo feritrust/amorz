@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { apiFetch } from '@/lib/api';
+import { fetchJson } from '@/lib/api';
 
 export default function AdminGuard({ children }) {
   const router = useRouter();
@@ -14,7 +14,7 @@ export default function AdminGuard({ children }) {
 
     async function check() {
       try {
-        await apiFetch('/admin/check');
+        await fetchJson('/admin/check');
         if (!cancelled) setAllowed(true);
       } catch (e) {
         if (!cancelled) {

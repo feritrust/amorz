@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { apiFetch } from "@/lib/api";
+import { fetchJson } from "@/lib/api";
 import AdminGuard from "@/components/AdminGuard";
 
 export default function AdminProductsPage() {
@@ -26,8 +26,8 @@ export default function AdminProductsPage() {
     setError(null);
     try {
       const [prods, cats] = await Promise.all([
-        apiFetch("/products"),
-        apiFetch("/categories"),
+        fetchJson("/products"),
+        fetchJson("/categories"),
       ]);
       setProducts(prods || []);
       setCategories(cats || []);
@@ -52,7 +52,7 @@ export default function AdminProductsPage() {
     setSaving(true);
     setError(null);
     try {
-      await apiFetch("/products", {
+      await fetchJson("/products", {
         method: "POST",
         body: JSON.stringify({
           title: form.title,
@@ -84,7 +84,7 @@ export default function AdminProductsPage() {
   const handleDelete = async (id) => {
     if (!window.confirm("محصول حذف شود؟")) return;
     try {
-      await apiFetch(`/products/${id}`, {
+      await fetchJson(`/products/${id}`, {
         method: "DELETE",
       });
       await loadData();

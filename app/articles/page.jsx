@@ -1,56 +1,64 @@
 // app/articles/page.jsx
+import Link from "next/link";
+import Script from "next/script";
+import { apiFetch } from "@/lib/api";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
-
-async function fetchArticles() {
-  const res = await fetch(`${API_URL}/articles`, {
-    cache: 'no-store',
-  });
-
-  if (!res.ok) {
-    throw new Error('Failed to fetch articles');
-  }
-
-  return res.json();
-}
+export const metadata = {
+  title: "مقالات | خدمات بهشت زهرا",
+  description: "مقالات و راهنماهای مربوط به خدمات و مراسم در بهشت زهرا.",
+  alternates: { canonical: "https://amorz.ir/articles" },
+};
 
 export default async function ArticlesPage() {
-  const articles = await fetchArticles();
+  const articles = (await apiFetch("/articles", { next: { revalidate: 300 } }).catch(() => [])) || [];
+
+  const itemListJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    itemListElement: articles.map((a, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: a.title,
+      url: `https://amorz.ir/articles/${a.slug || a.id}`,
+    })),
+  };
 
   return (
-    <div style={{ maxWidth: 900, margin: '0 auto', padding: 24 }}>
-      <h1 style={{ marginBottom: 20 }}>مقالات</h1>
+    <div className="max-w-5xl mx-auto px-4 py-6" dir="rtl">
+      <Script
+        id="articles-itemlist-jsonld"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }}
+      />
+
+      <h1 className="text-2xl font-bold mb-5 text-gray-900 dark:text-white">مقالات</h1>
 
       {articles.length === 0 ? (
-        <p>هنوز مقاله‌ای ثبت نشده است.</p>
+        <p className="text-sm text-gray-600 dark:text-gray-300">هنوز مقاله‌ای ثبت نشده است.</p>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <div className="flex flex-col gap-3">
           {articles.map((a) => (
-            <a
+            <Link
               key={a.id}
-              href={`/articles/${a.id}`}
-              style={{
-                padding: 16,
-                borderRadius: 10,
-                border: '1px solid #eee',
-                textDecoration: 'none',
-                color: '#111827',
-                background: '#fff',
-              }}
+              href={`/articles/${a.slug || a.id}`}
+              className="block p-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 hover:shadow-sm transition"
             >
-              <h2 style={{ fontSize: 18, marginBottom: 6 }}>{a.title}</h2>
-              <p style={{ fontSize: 13, color: '#6b7280', marginBottom: 8 }}>
-                {a.createdAt
-                  ? new Date(a.createdAt).toLocaleDateString('fa-IR')
-                  : ''}
-                {a.author ? ` | نویسنده: ${a.author}` : ''}
+              <h2 className="text-base font-semibold text-gray-900 dark:text-white mb-1">
+                {a.title}
+              </h2>
+
+              <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
+                {a.createdAt ? new Date(a.createdAt).toLocaleDateString("fa-IR") : ""}
+                {a.author ? ` | نویسنده: ${a.author}` : ""}
               </p>
+
               {a.content && (
-                <p style={{ fontSize: 14, color: '#4b5563' }}>
-                  {a.content.slice(0, 120)}{a.content.length > 120 ? '...' : ''}
+                <p className="text-sm text-gray-700 dark:text-gray-300 line-clamp-2">
+                  {a.content.slice(0, 160)}
+                  {a.content.length > 160 ? "..." : ""}
                 </p>
               )}
-            </a>
+            </Link>
           ))}
         </div>
       )}

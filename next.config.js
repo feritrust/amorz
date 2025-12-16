@@ -1,8 +1,19 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
   images: {
-    domains: ["localhost", "picsum.photos",'bakhtarflower.com'], // ← دامنه picsum.photos اضافه شد
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "dl.amorz.ir",
+        pathname: "/**",
+      },
+      // اگر گاهی از خود دامنه هم عکس داری:
+      {
+        protocol: "https",
+        hostname: "amorz.ir",
+        pathname: "/**",
+      },
+    ],
   },
 };
 

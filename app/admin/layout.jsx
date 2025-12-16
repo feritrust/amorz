@@ -1,14 +1,14 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { apiFetch } from '@/lib/api';
+import { fetchJson } from "@/lib/api";
 
 export default function AdminLayout({ children }) {
   const router = useRouter();
 
   const handleLogout = async () => {
     try {
-      await apiFetch('/admin/logout', { method: 'POST' });
+      await fetchJson('/admin/logout', { method: 'POST' });
     } catch (e) {
       console.log('Logout error:', e);
     }

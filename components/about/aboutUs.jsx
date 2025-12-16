@@ -70,7 +70,7 @@ const AboutUs = () => {
 
         <CardFooter className="text-center">
           <p className="text-gray-500 text-sm">
-            &copy; {new Date().getFullYear()} خدمات بهشت زهرا. تمامی حقوق محفوظ است.
+           &copy; 2025 خدمات بهشت زهرا. تمامی حقوق محفوظ است.
           </p>
         </CardFooter>
       </Card>

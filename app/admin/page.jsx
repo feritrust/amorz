@@ -1,14 +1,14 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { apiFetch } from '@/lib/api';
+import { fetchJson } from '@/lib/api';
 
 export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [auth, setAuth] = useState(false);
 
   useEffect(() => {
-    apiFetch('/articles') // یه درخواست تستی برای چک کردن کوکی
+    fetchJson('/articles') // یه درخواست تستی برای چک کردن کوکی
       .then(() => setAuth(true))
       .catch(() => setAuth(false))
       .finally(() => setLoading(false));
