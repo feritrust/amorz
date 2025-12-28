@@ -128,5 +128,72 @@
 @layer base {
   html {
     font-family: 'Qs_Iranyekan', sans-serif;
+    
   }
+}
+/* ============================= */
+/* Article Content Styles        */
+/* ============================= */
+
+.article-content {
+  font-size: 14px;
+  line-height: 1.9;
+  color: #111827;
+}
+
+/* پاراگراف‌ها */
+.article-content p {
+  margin: 12px 0;
+}
+
+/* تیترها */
+.article-content h2 {
+  font-size: 20px;
+  font-weight: 700;
+  margin-top: 32px;
+  margin-bottom: 12px;
+  color: #0f172a;
+}
+
+.article-content h3 {
+  font-size: 17px;
+  font-weight: 600;
+  margin-top: 24px;
+  margin-bottom: 8px;
+  color: #1e293b;
+}
+
+/* لیست‌ها */
+.article-content ul {
+  margin: 12px 0 12px 20px;
+  list-style: disc;
+}
+
+.article-content li {
+  margin: 6px 0;
+}
+
+/* لینک‌ها */
+.article-content a {
+  color: #2563eb;
+  text-decoration: underline;
+  font-weight: 500;
+}
+
+.article-content a:hover {
+  color: #1d4ed8;
+}
+
+/* دارک مود */
+.dark .article-content {
+  color: #e5e7eb;
+}
+
+.dark .article-content h2,
+.dark .article-content h3 {
+  color: #f9fafb;
+}
+
+.dark .article-content a {
+  color: #60a5fa;
 }

@@ -125,15 +125,9 @@ export default async function ArticleDetailPage({ params }) {
         </div>
       )}
 
-      {article.content && (
+    {article.content && (
   <div
-    className="
-    prose max-w-none dark:prose-invert
-    prose-h2:text-xl prose-h2:font-bold prose-h2:mt-8 prose-h2:mb-3
-    prose-h3:text-lg prose-h3:font-semibold prose-h3:mt-6 prose-h3:mb-2
-    prose-p:text-sm prose-p:leading-7
-    prose-a:text-blue-600 prose-a:underline hover:prose-a:text-blue-700
-  "
+    className="article-content"
     dangerouslySetInnerHTML={{ __html: article.content }}
   />
 )}
