@@ -17,9 +17,15 @@ export async function generateMetadata({ params }) {
 
   if (!article) return { title: "مقاله پیدا نشد" };
 
-  const title = `${article.title} | مقالات`;
-  const description =
-    stripText(article.content).slice(0, 160) || "مشاهده مقاله در خدمات بهشت زهرا.";
+  const title = article.metaTitle?.trim()
+  ? article.metaTitle.trim()
+  : `${article.title} | مقالات`;
+
+const description =
+  (article.metaDescription?.trim()
+    ? article.metaDescription.trim()
+    : stripText(article.content).slice(0, 160)) || "مشاهده مقاله در خدمات بهشت زهرا.";
+
 
   return {
     title,

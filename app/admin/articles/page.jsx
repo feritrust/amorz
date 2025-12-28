@@ -6,7 +6,13 @@ import AdminGuard from "@/components/AdminGuard";
 
 export default function AdminArticlesPage() {
   const [articles, setArticles] = useState([]);
-  const [form, setForm] = useState({ title: "", content: "", imageUrl: "" });
+  const [form, setForm] = useState({
+  title: "",
+  content: "",
+  imageUrl: "",
+  metaTitle: "",
+  metaDescription: "",
+});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
@@ -53,13 +59,22 @@ export default function AdminArticlesPage() {
       await fetchJson("/articles", {
         method: "POST",
         body: JSON.stringify({
-          title: form.title.trim(),
-          content: form.content.trim(),
-          imageUrl: form.imageUrl.trim() || undefined,
-        }),
+  title: form.title.trim(),
+  content: form.content.trim(),
+  imageUrl: form.imageUrl.trim() || undefined,
+  metaTitle: form.metaTitle.trim() || undefined,
+  metaDescription: form.metaDescription.trim() || undefined,
+}),
+
       });
 
-      setForm({ title: "", content: "", imageUrl: "" });
+      setForm({
+  title: "",
+  content: "",
+  imageUrl: "",
+  metaTitle: "",
+  metaDescription: "",
+});
       await loadData();
     } catch (e) {
       setError(e.message);
@@ -112,6 +127,42 @@ export default function AdminArticlesPage() {
                 }}
               />
             </div>
+
+            <div style={{ marginBottom: 10 }}>
+  <label>متا تایتل (اختیاری):</label>
+  <input
+    name="metaTitle"
+    value={form.metaTitle}
+    onChange={handleChange}
+    placeholder="مثلاً: راهنمای مراسم ترحیم در بهشت زهرا | صفر تا صد"
+    style={{
+      width: "100%",
+      padding: 8,
+      borderRadius: 8,
+      border: "1px solid #ccc",
+    }}
+  />
+  <div style={{ fontSize: 12, color: "#6b7280", marginTop: 6 }}>
+    پیشنهاد: حداکثر ۶۰–۷۰ کاراکتر.
+  </div>
+</div>
+
+<div style={{ marginBottom: 10 }}>
+  <label>متا دیسکریپشن (اختیاری):</label>
+  <textarea
+    name="metaDescription"
+    value={form.metaDescription}
+    onChange={handleChange}
+    rows={3}
+    placeholder="خلاصه کوتاه مقاله برای نمایش در گوگل (حدود ۱۵۰–۱۶۰ کاراکتر)"
+    style={{
+      width: "100%",
+      padding: 8,
+      borderRadius: 8,
+      border: "1px solid #ccc",
+    }}
+  />
+</div>
 
             <div style={{ marginBottom: 10 }}>
               <label>متن مقاله:</label>
