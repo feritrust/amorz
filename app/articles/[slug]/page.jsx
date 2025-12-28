@@ -126,10 +126,11 @@ export default async function ArticleDetailPage({ params }) {
       )}
 
       {article.content && (
-        <div className="prose prose-sm max-w-none dark:prose-invert">
-          <p style={{ whiteSpace: "pre-wrap" }}>{article.content}</p>
-        </div>
-      )}
+  <div
+    className="prose prose-sm max-w-none dark:prose-invert"
+    dangerouslySetInnerHTML={{ __html: article.content }}
+  />
+)}
     </div>
   );
 }
